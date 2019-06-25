@@ -1,16 +1,12 @@
 <template>
-  <div class="container">
-   
-  </div>
+    <div>
+        酒店页面
+    </div>
 </template>
 
 <script>
-
-
 export default {
-  components: {
-  
-  }
+
 }
 </script>
 

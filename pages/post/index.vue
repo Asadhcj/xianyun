@@ -1,16 +1,12 @@
 <template>
-  <div class="container">
-   
-  </div>
+    <div>
+        旅游攻略
+    </div>
 </template>
 
 <script>
-
-
 export default {
-  components: {
-  
-  }
+
 }
 </script>
 
