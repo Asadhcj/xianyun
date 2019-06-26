@@ -12,3 +12,9 @@
     background:#409eff;
     height: 1px;
 }
+*{margin: 0;
+    padding: 0;}
+    a{
+        text-decoration: none;
+        color: inherit;
+    }
