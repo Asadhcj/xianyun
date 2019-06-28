@@ -51,10 +51,7 @@
             
         </div>
         <el-row type="flex" class="bottom" justify="center" align="middle">
-        
-            
                 <span>京ICP备08001421号 京公网安备110108007702 Copyright © 2016-2019 博学谷 All Rights Reserved</span>
-        
         </el-row>
     </footer>
 </template>
@@ -96,7 +93,7 @@ export default {
         color:orange;
     }
     .bottom{
-        width:1000px;
+        
          font-size: 13px;
          height:100px;
     }
