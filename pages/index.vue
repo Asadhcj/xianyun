@@ -67,7 +67,7 @@ export default {
     this.$axios({
        url: "/scenics/banners"
     }).then(res=>{
-      console.log(res)
+      
       this.imgList=res.data.data
       this.baseurl=res.config.baseURL
     })
@@ -126,7 +126,7 @@ export default {
                       margin-left:8px;
                     }
                     i{
-                      display:line-block;
+                      display:inline-block;
                       width: 40px;
                       height:30px;
                       font-style:normal;

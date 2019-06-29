@@ -34,16 +34,18 @@
                     <el-dropdown-item>消息</el-dropdown-item>  
                 </el-dropdown-menu>
                 </el-dropdown>
-                <el-dropdown class="user" v-if="false">
+                <el-dropdown class="user" v-if="$store.state.user.userInfo.token">
                     <span class="el-dropdown-link">
                           <img src="http://157.122.54.189:9093/images/pic_sea.jpeg"/>
-                         Asad<i class="el-icon-arrow-down el-icon--right"></i>
+                        {{$store.state.user.userInfo.user.nickname}}<i class="el-icon-arrow-down el-icon--right"></i>
                     </span>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item>
                         <nuxt-link to="/user/userMsg">个人中心</nuxt-link>
                     </el-dropdown-item>
-                    <el-dropdown-item>退出</el-dropdown-item>
+                    <el-dropdown-item>
+                        <span @click="handleloginOut">退出</span> 
+                    </el-dropdown-item>
                     
                 </el-dropdown-menu>
                 </el-dropdown>
@@ -57,7 +59,13 @@
 
 <script>
 export default {
-    
+    methods:{
+        handleloginOut(){ 
+            const {commit}=this.$store
+            commit("user/clearloginInfo",{})
+            this.$message.success("退出成功")
+        }
+    }
 }
 </script>
 
