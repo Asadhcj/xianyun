@@ -32,7 +32,7 @@ export default {
     },
     methods:{
         handleclick(index){
-            console.log(index)
+            
             this.current=index
         }
     }
@@ -59,7 +59,8 @@ export default {
                 line-height: 50px;
                 background: rgba(255, 255, 255, 0.774); 
                 box-sizing: border-box;
-                 border-top:3px solid #fff;
+                border-top:3px solid #fff;
+                cursor: pointer;
             }
             .btncss{
                 border-top:3px solid orange;

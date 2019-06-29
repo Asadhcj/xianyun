@@ -5,7 +5,7 @@
                 <el-input placeholder="用户名/手机" v-model="form.username" ></el-input>
             </el-form-item>
              <el-form-item prop="password">
-                <el-input  placeholder="密码"  type="password" v-model="form.password"></el-input>
+                <el-input  placeholder="密码" show-password type="password" v-model="form.password"></el-input>
             </el-form-item>
             <el-row type="flex" justify="end" class="forgetpwd">
                 <span >忘记密码？</span>
@@ -71,6 +71,7 @@ export default {
             font-size: 14px;
             box-sizing: border-box;
             padding-bottom: 5px;
+            cursor: pointer;
         }
     }
 </style>
