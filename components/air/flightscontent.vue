@@ -49,8 +49,11 @@
                      ￥{{item.par_price}}
                     </el-col>
                     <el-col :span="4">
-                        <el-button type="warning" 
-                        size="minni">选定</el-button>
+                        <el-button 
+                        type="warning" 
+                        size="minni"
+                        @click="handleOrder(data.id,item.seat_xid)">
+                        选定</el-button>
                         <span>剩余：{{item.discount}}</span>
                     </el-col>
                 </el-row>
@@ -64,37 +67,26 @@ export default {
     data(){
         return {
             isshow:false,
-            data:{
-                airline_name:"",
-                seat_infos:[],
-                base_price:"",
-                dst_airport_quay:"",
-                dst_airport_name:"",
-                arr_time:"",
-                org_airport_quay:"",
-                org_airport_name:"",
-                flight_no:"",
-                dep_time:"",
-            },
+          
            time:""
         }
     },
     props:{
-        ticketInfo:{
+        data:{
             type:Object,
             default:{} 
         }
     },
     mounted(){
-        this.data=this.ticketInfo
         this.time=this.computedtime()
     },
+
     methods:{
         handleshow(){
             this.isshow=!this.isshow
         },
         computedtime(){
-            const {arr_time,dep_time}=this.ticketInfo
+            const {arr_time,dep_time}=this.data
             let dep=dep_time.split(":");
             let arr=arr_time.split(":");
             if(dep[0]>arr[0]){
@@ -103,6 +95,16 @@ export default {
             }
             const hour=(arr[0]*60+ +arr[1])-(dep[0]*60+ +dep[1]);
             return `${Math.floor(hour/60)}时${hour%60}分`
+        },
+        handleOrder(id,seat_xid){
+            
+            this.$router.push({
+                path:"/air/order/",
+                query:{
+                    id:id,
+                    seat_xid:seat_xid
+                    }
+            })
         }
     }
 }

@@ -34,7 +34,7 @@
                      v-for="(item,index) in  data.options.flightTimes"
                     :key="index"
                     :label="`${item.from}:00 - ${item.to}:00`" 
-                    :value="`${item.from}:00 - ${item.to}:00`"
+                    :value="`${item.from},${item.to}`"
                    >
                     </el-option>
                 </el-select>
@@ -107,6 +107,7 @@ export default {
             this.selectaircompany="";
             this.selecttime="";
             this.selectairport="";
+            this.$emit("select",this.data.flights)
         },
         // 选中飞机类型时
         handleselectairtype(val){
@@ -115,17 +116,40 @@ export default {
         },
         // 选中航空公司时
         handleselectaircompany(val){
-            console.log(133)
             const arr =this.data.flights.filter(v=>v.airline_name===val)
-            console.log(arr)
             this.$emit("select",arr)
         },
         // 选中时间是
         handleselecttime(val){
-
+            const time=val.split(",")
+            if(+time[0]< +time[1]){
+                const arr=this.data.flights.filter(
+                    v=>{
+                       return +v.dep_time.split(":")[0]>=+time[0]
+                       &&+v.arr_time.split(":")[0]<=+time[1]&&+v.arr_time.split(":")[0]>+time[0]
+                        })
+                 this.$emit("select",arr) 
+            }else{
+                const arr=this.data.flights.filter(
+                    v=>{
+                        if(+v.dep_time.split(":")[0]>+v.arr_time.split(":")[0]){
+                          return  +v.dep_time.split(":")[0]>=+time[0]&&
+                                    +v.arr_time.split(":")[0]>=+time[1]
+                        }else{
+                            return +v.dep_time.split(":")[0]>=+time[0]&&
+                                    +v.arr_time.split(":")[0]<=+time[1]
+                        }
+                        
+                    })
+                    this.$emit("select",arr) 
+            }
+           
+           
         },
         handleselectairport(val){
+             const arr =this.data.flights.filter(v=>v.org_airport_name===val)
 
+            this.$emit("select",arr)
         }
      }
   

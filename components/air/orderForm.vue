@@ -1,9 +1,9 @@
 <template>
     <div class="main">
         <div class="air-column">
-            <h2>剩机人</h2>
-            <el-form class="member-info" v-for="(item,index) in person" :key="index" >
-                <div class="member-info-item" >
+            <h2>乘机人</h2>
+            <el-form class="member-info"  >
+                <div class="member-info-item" v-for="(item,index) in users" :key="index">
                     <el-form-item label="乘机人类型">
                         <el-input placeholder="姓名" v-model="item.username" class="input-with-select">
                             <el-select 
@@ -27,18 +27,22 @@
                         </el-input>
                     </el-form-item>
 
-                    <span class="delete-user" @click="handleDeleteUser(index)" v-if="">-</span>
+                    <span class="delete-user" @click="handleDeleteUse(index)" >-</span>
                 </div>
             </el-form>
-            <el-button class="add-member" type='primary' @click="handleAddUsers(index)">添加乘机人</el-button>
+            <el-button class="add-member" type='primary' @click="handleAddUsers">添加乘机人</el-button>
         </div>
 
         <div class="air-column">
             <h2>保险</h2>
             <div>
-                <div class="insurance-item">
+                <div 
+                class="insurance-item"
+                v-for="(item,index) in data"
+                :key="index" >
                     <el-checkbox 
-                    label="航空意外险：￥30/份×1  最高赔付260万" 
+                    :label="`${item.type}：￥${item.price}/份×1 
+                     最高赔付${item.compensation}万`" 
                     border>
                     </el-checkbox> 
                 </div>
@@ -75,19 +79,25 @@
 export default {
     data(){
         return{
-            person:[
-                {username:"",
-                id:""}
+            users:[
+                {
+                    username:"",
+                    id:""
+                }
             ],
-            show:1,
-           isshow:1,
+           
+        }
+    },
+    props:{
+        data:{
+            type:Array,
+            default:[]
         }
     },
     methods: {
         // 添加乘机人
-        handleAddUsers(index){
-            this.isshow=index
-            this.person.push({
+        handleAddUsers(){
+            this.users.push({
                 username:"",
                 id:"",
             })
@@ -95,7 +105,7 @@ export default {
         
         // 移除乘机人
         handleDeleteUse(index){
-            this.person.splice(index,1)
+            this.users.splice(index,1)
         },
         
         // 发送手机验证码
@@ -146,7 +156,7 @@ export default {
 
         &:first-child{
             .delete-user{
-                
+                display: none;
             }
         }
     }

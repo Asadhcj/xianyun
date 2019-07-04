@@ -3,13 +3,13 @@
        <div class="main">
            <el-row type="flex" justify="space-between">
                <div class="flights-left">
-                    <FLIGHTSFILTERS :data="datalist" @select="getflightslist"/>
+                    <FLIGHTSFILTERS :data="data" @select="getflightslist"/>
                     <FLIGHTSHEADER/>
                     <div>
                         <FLIGHTSCONTENT
-                        v-for="(item,index) in data.flights" 
+                        v-for="(item,index) in datalist" 
                         :key="index"
-                        :ticketInfo="item"/> 
+                        :data="item"/> 
                         <el-pagination
                         @size-change="handleSizeChange"
                         @current-change="handleCurrentChange"
@@ -17,12 +17,13 @@
                         :page-sizes="[5, 10, 15, 20]"
                         :page-size="pageSize"
                         layout="total, sizes, prev, pager, next, jumper"
-                        :total="data.flights.total">
+                        :total="newdata.total">
                         </el-pagination>
                     </div>
-                  
                </div>
-               <div class="flights-right"></div>
+               <div class="flights-right">
+                  <FLIGHTSASIDE @historyInfo="searchHistory"/>
+               </div>
            </el-row>
        </div>
     </div>
@@ -31,20 +32,17 @@
 <script>
     import FLIGHTSFILTERS from "@/components/air/flightsFilters";
     import FLIGHTSHEADER from "@/components/air/flightsheader";
-    import  FLIGHTSCONTENT from "@/components/air/flightscontent"
+    import  FLIGHTSCONTENT from "@/components/air/flightscontent";
+    import FLIGHTSASIDE from "@/components/air/flightsAside"
 export default {
     data(){
         return {
             data:{
                 info:{},
                 options:{},
-                flights:[]
+                flights:[],
             },
-            datalist:{
-                info:{},
-                options:{},
-                flights:[] 
-            },
+            datalist:[],
             pageIndex:1,
             pageSize:5,
             newdata:{
@@ -57,7 +55,8 @@ export default {
     components:{
          FLIGHTSFILTERS,
          FLIGHTSHEADER,
-         FLIGHTSCONTENT
+         FLIGHTSCONTENT,
+         FLIGHTSASIDE
     },
     methods:{
         handleSizeChange(val) {
@@ -72,14 +71,23 @@ export default {
           if(arr){
               this.pageIndex=1,
               this.newdata.flights=arr,
-              this.pageSize=arr.length
+              this.newdata.total=arr.length
           }
-        this.data.flights=this.newdata.flights.slice(
+     this.datalist= this.newdata.flights.slice(
             (this.pageIndex-1)*this.pageSize,
             this.pageSize*this.pageIndex)
+        
       },
+      searchHistory(val){
+          console.log(123)
+            this.newdata=val;
+            this.data={...val};
+            this.datalist=this.newdata.flights;
+            this.getflightslist()
+      }
      
     },
+   
     mounted(){
         this.$axios({
             url:"/airs",
@@ -87,9 +95,9 @@ export default {
             params:this.$route.query
         }).then(res=>{
             // console.log(res.data)
-            this.datalist={...res.data}
-            this.newdata={...res.data}
+            this.newdata=res.data;
             this.data={...res.data};
+            this.datalist=this.newdata.flights;
             this.getflightslist()
         })
     }

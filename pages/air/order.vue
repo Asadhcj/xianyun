@@ -3,24 +3,47 @@
         <el-row type="flex" justify="space-between">
             <!-- 订单表单 -->
             <div class="main">
-                 <ORDERFORM/>
+                 <ORDERFORM :data="insurances" @getseatInfo="handlepushseatInfo"/>
             </div>
 
             <!-- 侧边栏 -->
             <div class="aside">
-                   <!-- <ORDERASIDE/>        -->
+                   <ORDERASIDE :data="data"/>       
             </div>
         </el-row>
     </div>
 </template>
 
 <script>
- import ORDERFORM from "@/components/air/orderForm.vue";
-//  import ORDERASIDE from "@/components/air/orderAside.vue"
+ import ORDERFORM from "@/components/air/orderForm";
+ import ORDERASIDE from "@/components/air/orderAside"
 export default {
+    data(){
+        return {
+            insurances:[],
+            data:{
+                
+            }
+        }
+    },
     components:{
          ORDERFORM,
-        //  ORDERASIDE,
+         ORDERASIDE,
+    },
+    methods:{
+        handlepushseatInfo(val){
+            
+        }
+    },
+    mounted(){
+        this.$axios({
+            url:"/airs/"+this.$route.query.id,
+            method:"GET",
+            params:this.$route.query.seat_xid
+        }).then(res=>{
+            const {insurances}=res.data
+            this.insurances=insurances
+        })
     }
 }
 </script>
