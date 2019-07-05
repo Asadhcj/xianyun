@@ -304,7 +304,6 @@ export default {
             url:"/airs/sale",
             method:"GET",
         }).then(res=>{
-            console.log(res.data)
             const {data}=res.data
             this.ticketInfo=data
         })

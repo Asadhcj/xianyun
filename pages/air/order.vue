@@ -3,12 +3,12 @@
         <el-row type="flex" justify="space-between">
             <!-- 订单表单 -->
             <div class="main">
-                 <ORDERFORM :data="insurances" @getseatInfo="handlepushseatInfo"/>
+                 <ORDERFORM  @getseatInfo="handleseatInfo" @getallPrice="handlesetallPrice"/>
             </div>
 
             <!-- 侧边栏 -->
             <div class="aside">
-                   <ORDERASIDE :data="data"/>       
+                   <ORDERASIDE :data="data" :allPrice="allPrice"/>       
             </div>
         </el-row>
     </div>
@@ -20,10 +20,10 @@
 export default {
     data(){
         return {
-            insurances:[],
             data:{
-                
-            }
+                seat_infos: {}
+            },
+            allPrice:0
         }
     },
     components:{
@@ -31,19 +31,15 @@ export default {
          ORDERASIDE,
     },
     methods:{
-        handlepushseatInfo(val){
-            
+        handleseatInfo(val){
+            this.data=val
+        },
+        handlesetallPrice(price){
+            this.allPrice=price
         }
     },
     mounted(){
-        this.$axios({
-            url:"/airs/"+this.$route.query.id,
-            method:"GET",
-            params:this.$route.query.seat_xid
-        }).then(res=>{
-            const {insurances}=res.data
-            this.insurances=insurances
-        })
+       
     }
 }
 </script>

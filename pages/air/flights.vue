@@ -79,7 +79,6 @@ export default {
         
       },
       searchHistory(val){
-          console.log(123)
             this.newdata=val;
             this.data={...val};
             this.datalist=this.newdata.flights;

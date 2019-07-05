@@ -44,10 +44,13 @@ export default {
             this.$refs.form.validate((valid)=>{
                    if (valid) {
                 this.$store.dispatch("user/login",this.form).then(res=>{
-                    console.log(res)
                     this.$message.success("登录成功，正在跳转。。。")
                  const timer=setTimeout(()=>{
-                     this.$router.push("/")
+                     if(this.$route.query.id){
+                         this.$router.back()
+                     }else{
+                         this.$router.push("/")
+                     }
                      clearTimeout(timer)
                  },2000)
                 })

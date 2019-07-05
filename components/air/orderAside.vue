@@ -2,8 +2,8 @@
     <div class="aside">
         <div class="air-info">
             <el-row type="flex" justify="space-between" class="info-top">
-                <div></div>
-                <div> - </div>
+                <div>{{data.dep_date}}</div>
+                <div>{{data.org_city_name}} - {{data.dst_city_name}}</div>
             </el-row>    
             <el-row 
             type="flex" 
@@ -11,16 +11,16 @@
             align="middle" 
             class="info-step">
                 <el-col :span="5" class="flight-airport">
-                    <strong></strong>
-                    <span></span>
+                    <strong>{{data.dep_time}}</strong>
+                    <span>{{data.org_airport_name}}{{data.org_airport_quay}}</span>
                 </el-col>
                 <el-col :span="14" class="flight-time">
-                    <span>---  ---</span>
-                    <span></span>
+                    <span>---{{rankTime}}---</span>
+                    <span>{{data.airline_name}}{{data.flight_no}}</span>
                 </el-col>
                 <el-col :span="5" class="flight-airport">
-                    <strong></strong>
-                    <span>浦东机场T2</span>
+                    <strong>{{data.arr_time}}</strong>
+                    <span>{{data.dst_airport_name}}{{data.dst_airport_quay}}</span>
                 </el-col>
             </el-row> 
         </div>
@@ -31,17 +31,17 @@
         </el-row>
         <el-row type="flex" justify="space-between" class="info-bar">
             <span>成人机票</span>
-            <span>￥</span>
+            <span>￥{{data.seat_infos.org_settle_price}}</span>
             <span>x1</span>
         </el-row>
         <el-row type="flex" justify="space-between" class="info-bar">
             <span>机建＋燃油</span>
-            <span>¥/人/单程</span>
+            <span>¥{{data.airport_tax_audlet}}/人/单程</span>
             <span>x1</span>
         </el-row>
         <el-row type="flex" justify="space-between" align="middle" class="info-bar">
             <span>应付总额：</span>
-            <span class="price">￥ </span>
+            <span class="price">￥{{allPrice}} </span>
         </el-row>           
     </div>
 </template>
@@ -52,30 +52,34 @@ export default {
         data: {
             type: Object,
             default: {}
+        },
+        allPrice:{
+            type:Number,
+            default:0
         }
     },
 
     computed: {
         rankTime(){
-        //     // 数据还未请求回来
-        //     if(!this.data.dep_time) return "";
+            // 数据还未请求回来
+            if(!this.data.dep_time) return "";
 
-        //     // 转化为分钟
-        //     const dep = this.data.dep_time.split(":");
-        //     const arr = this.data.arr_time.split(":");
-        //     const depVal = dep[0] * 60 + +dep[1];
-        //     const arrVal = arr[0] * 60 + +arr[1];
+            // 转化为分钟
+            const dep = this.data.dep_time.split(":");
+            const arr = this.data.arr_time.split(":");
+            const depVal = dep[0] * 60 + +dep[1];
+            const arrVal = arr[0] * 60 + +arr[1];
 
-        //     // 到达时间相减得到分钟
-        //     let dis = arrVal - depVal;
+            // 到达时间相减得到分钟
+            let dis = arrVal - depVal;
 
-        //     // 如果是第二天凌晨时间段，需要加24小时
-        //     if(dis < 0){
-        //         dis = arrVal + 24 * 60 - depVal;
-        //     }
+            // 如果是第二天凌晨时间段，需要加24小时
+            if(dis < 0){
+                dis = arrVal + 24 * 60 - depVal;
+            }
 
-        //     // 得到相差时间
-        //     return `${ Math.floor(dis / 60)}时${dis % 60}分`
+            // 得到相差时间
+            return `${ Math.floor(dis / 60)}时${dis % 60}分`
         }
     },
 }

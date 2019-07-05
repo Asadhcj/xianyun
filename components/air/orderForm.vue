@@ -38,9 +38,10 @@
             <div>
                 <div 
                 class="insurance-item"
-                v-for="(item,index) in data"
+                v-for="(item,index) in data.insurances"
                 :key="index" >
                     <el-checkbox 
+                    @change="handlechecked(item.id)"
                     :label="`${item.type}：￥${item.price}/份×1 
                      最高赔付${item.compensation}万`" 
                     border>
@@ -54,11 +55,11 @@
             <div class="contact">
                 <el-form label-width="60px">
                     <el-form-item label="姓名">
-                        <el-input></el-input>
+                        <el-input v-model="contactName"></el-input>
                     </el-form-item>
 
                     <el-form-item label="手机">
-                        <el-input placeholder="请输入内容">
+                        <el-input placeholder="请输入内容" v-model="contactPhone">
                             <template slot="append">
                             <el-button @click="handleSendCaptcha">发送验证码</el-button>
                             </template>
@@ -66,12 +67,13 @@
                     </el-form-item>
 
                     <el-form-item label="验证码">
-                        <el-input></el-input>
+                        <el-input v-model="captcha"></el-input>
                     </el-form-item>
                 </el-form>   
                 <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
             </div>
         </div>
+         <input type="hidden" :value="allPrice">
     </div>
 </template>
 
@@ -85,13 +87,16 @@ export default {
                     id:""
                 }
             ],
+            insurances:[],
+            contactName:"",
+            contactPhone:"",
+            invoice:false,
+            captcha: "",
+            data:{
+                insurances: [],
+                seat_infos: {}
+            }
            
-        }
-    },
-    props:{
-        data:{
-            type:Array,
-            default:[]
         }
     },
     methods: {
@@ -107,16 +112,102 @@ export default {
         handleDeleteUse(index){
             this.users.splice(index,1)
         },
-        
+        // 选中保险id
+        handlechecked(id){
+           if(this.insurances.indexOf(id)===-1){
+               this.insurances.push(id)
+           }else{
+               this.insurances.splice(this.insurances.indexOf(id),1)
+           }
+        },
         // 发送手机验证码
         handleSendCaptcha(){
-            
+            this.$axios({
+                url:"/captchas",
+                method:"POST",
+                data:{
+                    tel:this.contactPhone
+                },
+            }).then(res=>{
+                this.$message.success("验证码："+res.data.code)
+            })
         },
-
+      
         // 提交订单
         handleSubmit(){
+            const form={
+                users:this.users,
+                insurances:this.insurances,
+                contactName:this.contactName,
+                contactPhone:this.contactPhone,
+                invoice:false,
+                captcha: this.captcha,
+                seat_xid:this.data.seat_infos.seat_xid,
+                air:this.data.id
+            }
+            const {userInfo}=this.$store.state.user
+           if(!userInfo.token){
+               this.$router.push({
+                   path:"/user/login/",
+                   query:{
+                       id:this.$route.query.id
+                   }
+               })
+           }else{
+               this.$axios({
+                url:"/airorders",
+                method:"POST",
+                data:form,
+                headers: {
+                Authorization: `Bearer ${userInfo.token || 'NO TOKEN'}`
+                }
+            }).then(res=>{
+               this.$message.success(res.data.message)
+               const timer=setTimeout(()=>{
+                    this.$router.push({
+                        path:"/air/pay",
+                        query:{
+                            id:form.air
+                        }
+                    })
+               },1000)
+            })
+           }
             
         }
+    },
+     computed: {
+        // 计算总价格
+        allPrice(){
+            let price = 0;
+            // 机票单价
+            price += this.data.seat_infos.org_settle_price;
+
+            // 添加燃油费
+            price += this.data.airport_tax_audlet;
+
+            // 保险
+            price += this.insurances.length * 30;
+
+            price *= this.users.length;
+
+            // 把总价格传递给父组件
+            this.$emit("getallPrice", price);
+
+            return price;
+        }
+    },
+    mounted(){
+         this.$axios({
+            url:"/airs/"+this.$route.query.id,
+            method:"GET",
+            params: {
+                seat_xid: this.$route.query.seat_xid
+            }
+        }).then(res=>{
+           this.data=res.data;
+            this.$emit("getseatInfo",this.data)
+        })
     }
 }
 </script>
